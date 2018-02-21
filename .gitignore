@@ -1,0 +1,16 @@
+.idea/
+*.pyc
+db.sqlite3
+gmail.storage
+.DS_Store
+client_secret.json
+.vscode/
+tags
+source.sh
+.cache
+venv/
+venv-2/
+test.py
+pyrave.egg-info
+dist
+
