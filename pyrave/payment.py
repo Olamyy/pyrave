@@ -7,31 +7,41 @@ class Payment(BaseRaveAPI):
     def __init__(self):
         super(Payment, self).__init__()
 
-    def pay(self, method="pay", using="card", preauthorised=False, **kwargs):
+    def pay(self, using="card", preauthorised=False, return_encrypted=False, **kwargs):
         """
 
-        :param method:
         :param using:
         :param preauthorised:
         :param kwargs:
+        :param return_encrypted:
         :return:
         """
         rave_enc = RaveEncryption()
         endpoint = self.payment_endpoint + "charge"
-        if method == "pay":
-            if not kwargs.get("form.suggested_auth") and not kwargs.get("form.pin"):
-                raise MissingParamError("You need to pass the PIN and SUGGESTED_AUTH parameters in the function call "
-                                        "to make a payment")
+        # for i,v in kwargs.items():
+        #     print(f"{i} : {v}")
         encrypted_data = rave_enc.encrypt(using, preauthorised, **kwargs)
-        if not encrypted_data[0] == "201" or method == "get_pin":
+        if return_encrypted:
             return encrypted_data
-        request_data = encrypted_data[1]
         url = self._path(endpoint)
+        request_data = encrypted_data[1].json()
+        suggested_auth_request = self._exec_request("POST", url, request_data)
+        suggested_auth = suggested_auth_request[2].get("suggested_auth")
+        if not suggested_auth:
+            return suggested_auth_request
+        if not kwargs.get("pin"):
+                raise MissingParamError("You need to set the pin parameter in the function call "
+                                        "to make a payment")
+        request_data["suggested_auth"] = suggested_auth
         return self._exec_request("POST", url, request_data)
 
-    def validate_charge(self, key, reference, otp, method="card"):
+    def get_encrypted_data(self,using="card", preauthorised=False, **kwargs):
+        rave_enc = RaveEncryption()
+        return rave_enc.encrypt(using, preauthorised, **kwargs)
+
+    def validate_charge(self, reference, otp, method="card"):
         request_data = {
-            "PBFPubKey": key,
+            "PBFPubKey": self.secret_key,
             "otp": otp
         }
         endpoint = self.payment_endpoint + "validatecharge" if method == "card" else self.payment_endpoint + "validate"
@@ -122,3 +132,32 @@ class Payment(BaseRaveAPI):
         }
         url = self._path(endpoint)
         return self._exec_request("POST", url, request_data)
+
+
+import os
+os.environ["RAVE_SECRET_KEY"] = "FLWSECK-cb26302f4cedae0fdbed8eff3f8279ec-X"
+os.environ["RAVE_PUBLIC_KEY"] = "FLWPUBK-7d2b1d0a7b3f48e30299dfa251448491-X"
+
+
+a = Payment()
+data = {
+    "currency": "NGN",
+    "country": "Nigeria",
+    "amount": 5000,
+    "email": "olamyy53@gmail.com",
+    "phonenumber": "09036671876",
+    "firstname": "Lekan",
+    "lastname": "Wahab",
+    "IP": "127.0.0.1",
+    "txRef": "123r34",
+    "accountnumber": "123433453323",
+    "accountbank": "ZENITH BANK PLC",
+    "payment_type": "account",
+    'pin': "absc",
+    "suggested_auth": "pin"
+}
+payment = a.pay(action="pay", preauthorised=False, using="account", **data)
+
+print(payment[1])
+
+

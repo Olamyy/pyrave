@@ -17,8 +17,8 @@ class RaveEncryption(BaseRaveAPI):
             "seckey": self.secret_key,
             "pubkey": self.public_key,
             "form.PBFPubKey": self.public_key,
-            "form.currency": kwargs.get('currency', False),
-            "form.country": kwargs.get('country', False),
+            "form.currency": kwargs.get('currency'),
+            "form.country": kwargs.get('country'),
             "form.amount": kwargs.get('amount'),
             "form.email": kwargs.get('email'),
             "form.phonenumber": kwargs.get('phonenumber'),
@@ -28,7 +28,6 @@ class RaveEncryption(BaseRaveAPI):
             "form.txRef": kwargs.get('txRef'),
             "form.device_fingerprint": kwargs.get('device_fingerprint', False)
         }
-
         card_params = {
             "form.cardno": kwargs.get('cardno'),
             "form.ccv": kwargs.get('ccv', True),
@@ -37,7 +36,6 @@ class RaveEncryption(BaseRaveAPI):
             "form.charge_type": kwargs.get('charge_type') if preauthorised else preauthorised
 
         }
-
         account_params = {
             "form.accountnumber": kwargs.get("accountnumber"),
             "form.accountbank": kwargs.get("accountbank"),
@@ -46,9 +44,9 @@ class RaveEncryption(BaseRaveAPI):
         url = self.test_encryption_url if self.implementation == "test" else self.live_encryption_url
         if using == "account":
             account_params.update(common_params)
-            self._exec_request("POST", url, data=account_params)
+            return self._exec_request("POST", url, data=account_params)
         card_params.update(common_params)
-        self._exec_request("POST", url, data=card_params)
+        return self._exec_request("POST", url, data=card_params)
 
 
 

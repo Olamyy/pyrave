@@ -2,9 +2,8 @@ from pyrave.base import BaseRaveAPI
 
 
 class Misc(BaseRaveAPI):
-    def __init__(self, auth_key):
-        super(Misc, self).__init__(auth_key)
-        self.misc_endpoint = "getpaidx/api/"
+    def __init__(self):
+        super(Misc, self).__init__()
 
     def get_banks(self):
         endpoint = self.payment_endpoint + "flwpbf-banks.js"
@@ -37,7 +36,7 @@ class Misc(BaseRaveAPI):
         url = self._path(endpoint)
         return self._exec_request('POST', url, request_data)
 
-    def exchange_rates(self, origin_currency, destination_currency, amount=None):
+    def get_exchange_rates(self, origin_currency, destination_currency, amount=None):
         """
 
         :param amount:

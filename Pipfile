@@ -11,9 +11,8 @@ requests = "*"
 future = "*"
 mock = "*"
 
-
 [dev-packages]
-
+responses = "*"
 
 
 [requires]

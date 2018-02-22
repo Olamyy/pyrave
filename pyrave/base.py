@@ -3,6 +3,7 @@ import requests
 import json
 from pyrave import __version__
 from pyrave.errors import AuthKeyError, HttpMethodError
+from pyrave.funcs import is_valid_json
 
 
 class BaseRaveAPI(object):
@@ -25,8 +26,8 @@ class BaseRaveAPI(object):
 
     def __init__(self, implementation="test"):
         self.public_key = os.getenv("RAVE_PUBLIC_KEY", None)
-        self.secret_key = os.getenv("PAVE_SECRET_KEY", None)
-        if not self.public_key or self.secret_key:
+        self.secret_key = os.getenv("RAVE_SECRET_KEY", None)
+        if not self.public_key and not self.secret_key:
             raise AuthKeyError("The secret keys have not been set in your environment. You should get this from your rave "
                                "dashboard and set it in your env. Check {0} for more information".format(self._docs_url))
         self.implementation = implementation
@@ -60,7 +61,12 @@ class BaseRaveAPI(object):
             'GET': requests.get,
             'POST': requests.post,
         }
+        # if not data or is_valid_json(data):
+        #     payload = data
+        # else:
+        #     payload = json.dumps(data)
 
+        # payload = data if is_valid_json(data) or not data else json.dumps(data)
         payload = json.dumps(data) if data else data
         request = method_map.get(method)
 
@@ -70,14 +76,17 @@ class BaseRaveAPI(object):
 
         response = request(
             url, headers=self.http_headers(), data=payload, verify=True)
+        # print(f"response is {response}")
+        print(url)
         if response.status_code == 404:
             if response.json().get('message'):
                 body = response.json()
             return response.status_code, body['status'], body['message']
         body = response.json()
         # import pdb; pdb.set_trace()
+        print(f"body is {body}")
         if body.get('status') == 'error':
-            return response.status_code, body['status'], body['message'], body['code']
+            return response.status_code, body
         if response.status_code in [200, 201]:
             return self._json_parser(response)
         response.raise_for_status()
