@@ -7,31 +7,55 @@ class Payment(BaseRaveAPI):
     def __init__(self):
         super(Payment, self).__init__()
 
-    def pay(self, method="pay", using="card", preauthorised=False, **kwargs):
+    def pay(self, using="card", preauthorised=False, return_encrypted=False, **kwargs):
         """
 
-        :param method:
+        :param using:
+        :param preauthorised:
+        :param kwargs:
+        :param return_encrypted:
+        :return:
+        """
+        rave_enc = RaveEncryption()
+        endpoint = self.payment_endpoint + "charge"
+        # for i,v in kwargs.items():
+        #     print(f"{i} : {v}")
+        encrypted_data = rave_enc.encrypt(using, preauthorised, **kwargs)
+        if return_encrypted:
+            return encrypted_data
+        url = self._path(endpoint)
+        request_data = encrypted_data[1].json()
+        suggested_auth_request = self._exec_request("POST", url, request_data)
+        suggested_auth = suggested_auth_request[2].get("suggested_auth")
+        if not suggested_auth:
+            return suggested_auth_request
+        if not kwargs.get("pin"):
+                raise MissingParamError("You need to set the pin parameter in the function call "
+                                        "to make a payment")
+        request_data["suggested_auth"] = suggested_auth
+        return self._exec_request("POST", url, request_data)
+
+    def get_encrypted_data(self,using="card", preauthorised=False, **kwargs):
+        """
+
         :param using:
         :param preauthorised:
         :param kwargs:
         :return:
         """
         rave_enc = RaveEncryption()
-        endpoint = self.payment_endpoint + "charge"
-        if method == "pay":
-            if not kwargs.get("form.suggested_auth") and not kwargs.get("form.pin"):
-                raise MissingParamError("You need to pass the PIN and SUGGESTED_AUTH parameters in the function call "
-                                        "to make a payment")
-        encrypted_data = rave_enc.encrypt(using, preauthorised, **kwargs)
-        if not encrypted_data[0] == "201" or method == "get_pin":
-            return encrypted_data
-        request_data = encrypted_data[1]
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
+        return rave_enc.encrypt(using, preauthorised, **kwargs)
 
-    def validate_charge(self, key, reference, otp, method="card"):
+    def validate_charge(self, reference, otp, method="card"):
+        """
+
+        :param reference:
+        :param otp:
+        :param method:
+        :return:
+        """
         request_data = {
-            "PBFPubKey": key,
+            "PBFPubKey": self.secret_key,
             "otp": otp
         }
         endpoint = self.payment_endpoint + "validatecharge" if method == "card" else self.payment_endpoint + "validate"
@@ -74,36 +98,6 @@ class Payment(BaseRaveAPI):
         url = self._path(self.disbursement_endpoint)
         return self._exec_request("POST", url, request_data)
 
-    def capture_preauthorised_transaction(self, transaction_reference):
-        """
-
-        :param transaction_reference:
-        :return:
-        """
-        endpoint = self.payment_endpoint + "capture"
-        request_data = {
-                "SECKEY": self.secret_key,
-                "flwRef": transaction_reference,
-        }
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
-
-    def refund_or_void_transaction(self, action, reference_id):
-        """
-
-        :param action:
-        :param reference_id:
-        :return:
-        """
-        endpoint = self.payment_endpoint + "refundorvoid"
-        request_data = {
-                "ref": reference_id,
-                "action": action,
-                "SECKEY": self.secret_key
-        }
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
-
     def tokenize_charge(self, **kwargs):
         """
 
@@ -122,3 +116,4 @@ class Payment(BaseRaveAPI):
         }
         url = self._path(endpoint)
         return self._exec_request("POST", url, request_data)
+

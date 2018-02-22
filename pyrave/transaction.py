@@ -45,7 +45,7 @@ class Transaction(BaseRaveAPI):
             "SECKEY": self.secret_key
         }
         url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
+        return self._exec_request("GET", url, request_data)
 
     def get_reccurrent_transaction(self, transaction_id):
         """
