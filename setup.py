@@ -12,7 +12,9 @@ setup(name='pyrave',
       test_suite='nose.collector',
       tests_require=['nose'],
       install_requires=['requests'],
+      download_url='https://github.com/Olamyy/pyrave/archive/0.1.tar.gz',
       packages=['pyrave'],
+      keywords=['rave', 'payment', 'pyrave'],
       zip_safe=False
       )
 
