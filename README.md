@@ -4,27 +4,27 @@ Pyrave is a python wrapper for the flutterwave's [rave](http://rave.frontendpwc.
 
 It currently supports the following features:
 
-*Account charge (NG Banks)
+*  Account charge (NG Banks)
 
-*Account charge (International for US and ZAR).
+* Account charge (International for US and ZAR).
 
-*Card Charge (Bake in support for 3DSecure/PIN).
+* Card Charge (Bake in support for 3DSecure/PIN).
 
-*Encryption
+* Encryption
 
-*Transaction status check (Normal requery flow and xrequery).
+* Transaction status check (Normal requery flow and xrequery).
 
-*Retry transaction status check flow.
+* Retry transaction status check flow.
 
-*Preauth -> Capture -> Refund/void.
+* Preauth -> Capture -> Refund/void.
 
-*Support for USSD and Mcash (Alternative payment methods).
+* Support for USSD and Mcash (Alternative payment methods).
 
-*List of banks for NG Account charge. (Get banks list).
+* List of banks for NG Account charge. (Get banks list).
 
-*Get fees endpoint.
+* Get fees endpoint.
 
-*Integrity Checksum (https://flutterwavedevelopers.readme.io/docs/checksum).
+* Integrity Checksum (https://flutterwavedevelopers.readme.io/docs/checksum).
 
 ## Getting Started
 
@@ -74,19 +74,19 @@ A. Payment with card and account
     
 ```python
 ## Payment with card and account
-payment_with_card = rave_payment.pay(using="card", **data)
-payment_with_account = rave_payment.pay(using="account", **data)
+payment_with_card = rave_payment.pay(using="card", * * data)
+payment_with_account = rave_payment.pay(using="account", * * data)
 ```
 B. Getting encrypted data
 To get the encrypted data, call the Payment class' `get_encrypted_data` method. This would return a tuple of data
 ```python
-encrypted_data = rave_payment.get_encrypted_data(using="account", **data)
+encrypted_data = rave_payment.get_encrypted_data(using="account", * * data)
 ```
 
 An alternative approach to doing this is to call the pay method and pass the return_encrypted boolean as True
 
 ```python
-encrypted_data = rave_payment.pay(using="card", return_encrypted=True , **data)
+encrypted_data = rave_payment.pay(using="card", return_encrypted=True , * * data)
 ```
 
 In both cases, if the request was successful, you should be able to get each one of the encryption details by indexing `encrypted_data`
@@ -125,12 +125,12 @@ G. Transaction Refund or Void
 refund_or_void = rave_payment.refund_or_void_transaction("bank_code", "account_number", "currency", "amount")
 ```
 
-9. Charge Tokenization 
+H. Charge Tokenization 
 ```python
-tokenize = rave_payment.tokenize_charge(**data)
+tokenize = rave_payment.tokenize_charge(* * data)
 ```
 
-9. Refund
+I. Refund
 ```python
 refud = rave_payment.refund(reference_id="reference_id")
 ```
@@ -148,12 +148,12 @@ data = {...}
 A. Verify Transaction
 
 ```python
-verify = rave_transaction.verify_transaction(**data)
+verify = rave_transaction.verify_transaction(* * data)
 ```
 
 B. Verify Transaction with xrequery
 ```python
-verify = rave_transaction.verify_transaction_with_xrequery(**data)
+verify = rave_transaction.verify_transaction_with_xrequery(* * data)
 ```
 
 C. Get Recurrent Transactions
@@ -205,7 +205,7 @@ To contribute, fork the repo, make your  changes and create a pull request.
 
 ## Authors
 
-* [Olamilekan Wahab](https://github.com/Olamyy)
+*  [Olamilekan Wahab](https://github.com/Olamyy)
 
 
 
