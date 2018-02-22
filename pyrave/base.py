@@ -74,6 +74,8 @@ class BaseRaveAPI(object):
                 body = response.json()
             return response.status_code, body['status'], body['message']
         body = response.json()
+        if isinstance(body, list):
+            return body
         if body.get('status') == 'error':
             return response.status_code, body
         if response.status_code in [200, 201]:

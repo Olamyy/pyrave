@@ -6,7 +6,7 @@ class Misc(BaseRaveAPI):
         super(Misc, self).__init__()
 
     def get_banks(self):
-        endpoint = self.payment_endpoint + "flwpbf-banks.js"
+        endpoint = self.payment_endpoint + "flwpbf-banks.js?json=1"
         """
 
         :return:
@@ -26,11 +26,12 @@ class Misc(BaseRaveAPI):
                     if the card being used is an international card
         :return:
         """
-        endpoint = self.payment_endpoint("fee")
+        endpoint = self.payment_endpoint + "fee"
         request_data = {
             "amount": amount,
             "currency": currency,
             "ptype": ptype,
+            "PBFPubKey": self.public_key,
             "card6": card6,
         }
         url = self._path(endpoint)
@@ -54,3 +55,4 @@ class Misc(BaseRaveAPI):
             request_data["amount"] = amount
         url = self._path(endpoint)
         return self._exec_request('POST', url, request_data)
+
