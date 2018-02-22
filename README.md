@@ -115,16 +115,6 @@ To make disbursements, call the `disburse` method and pass the `bank_code`, `acc
 ```python
 disbursements = rave_payment.disburse("bank_code", "account_number", "currency", "amount")
 ```
-##### Preauthorization Capture
-To capture preauthorization, call the `capture_preauthorised_transaction` method and pass the `transaction_reference` as parameter
-```python
-preauthorization = rave_payment.capture_preauthorised_transaction("bank_code", "account_number", "currency", "amount")
-```
-
-##### Transaction Refund or Void
-```python
-refund_or_void = rave_payment.refund_or_void_transaction("bank_code", "account_number", "currency", "amount")
-```
 
 ##### Charge Tokenization 
 ```python
@@ -193,11 +183,37 @@ banks = misc.get_banks()
 banks = misc.get_fee(amount="your amount", currency="your currency", ptype="your ptype", card6="card's number")
 ````
 
-
 ##### Get Exchange Rates
 ````python
 rates = misc.get_exchange_rates(origin_currency="your origin currency", destination_currency="your destination currency", amount=None)
 ````
+
+
+## Preauth
+
+````python
+from pyrave import Preauth
+   
+preauth = Preauth()
+````
+
+#### Preauthorize card
+Before preauthorizing a card, get the client and alg parameters by calling the `get_encrypted_data` method of the Payment class.
+
+```python
+preauth.preauthorise_card(client="client id", algo="algo used")
+```
+
+##### Preauthorization Capture
+To capture preauthorization, call the `capture_preauthorised_transaction` method and pass the `transaction_reference` as parameter
+```python
+preauthorization = preauth.capture_preauthorised_transaction("bank_code", "account_number", "currency", "amount")
+```
+
+##### Transaction Refund or Void
+```python
+refund_or_void = preauth.refund_or_void_transaction("bank_code", "account_number", "currency", "amount")
+```
 
 
 ## Contributing

@@ -36,10 +36,24 @@ class Payment(BaseRaveAPI):
         return self._exec_request("POST", url, request_data)
 
     def get_encrypted_data(self,using="card", preauthorised=False, **kwargs):
+        """
+
+        :param using:
+        :param preauthorised:
+        :param kwargs:
+        :return:
+        """
         rave_enc = RaveEncryption()
         return rave_enc.encrypt(using, preauthorised, **kwargs)
 
     def validate_charge(self, reference, otp, method="card"):
+        """
+
+        :param reference:
+        :param otp:
+        :param method:
+        :return:
+        """
         request_data = {
             "PBFPubKey": self.secret_key,
             "otp": otp
@@ -84,36 +98,6 @@ class Payment(BaseRaveAPI):
         url = self._path(self.disbursement_endpoint)
         return self._exec_request("POST", url, request_data)
 
-    def capture_preauthorised_transaction(self, transaction_reference):
-        """
-
-        :param transaction_reference:
-        :return:
-        """
-        endpoint = self.payment_endpoint + "capture"
-        request_data = {
-                "SECKEY": self.secret_key,
-                "flwRef": transaction_reference,
-        }
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
-
-    def refund_or_void_transaction(self, action, reference_id):
-        """
-
-        :param action:
-        :param reference_id:
-        :return:
-        """
-        endpoint = self.payment_endpoint + "refundorvoid"
-        request_data = {
-                "ref": reference_id,
-                "action": action,
-                "SECKEY": self.secret_key
-        }
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
-
     def tokenize_charge(self, **kwargs):
         """
 
@@ -132,32 +116,4 @@ class Payment(BaseRaveAPI):
         }
         url = self._path(endpoint)
         return self._exec_request("POST", url, request_data)
-
-
-import os
-os.environ["RAVE_SECRET_KEY"] = "FLWSECK-cb26302f4cedae0fdbed8eff3f8279ec-X"
-os.environ["RAVE_PUBLIC_KEY"] = "FLWPUBK-7d2b1d0a7b3f48e30299dfa251448491-X"
-
-
-a = Payment()
-data = {
-    "currency": "NGN",
-    "country": "Nigeria",
-    "amount": 5000,
-    "email": "olamyy53@gmail.com",
-    "phonenumber": "09036671876",
-    "firstname": "Lekan",
-    "lastname": "Wahab",
-    "IP": "127.0.0.1",
-    "txRef": "123r34",
-    "accountnumber": "123433453323",
-    "accountbank": "ZENITH BANK PLC",
-    "payment_type": "account",
-    'pin': "absc",
-    "suggested_auth": "pin"
-}
-payment = a.pay(action="pay", preauthorised=False, using="account", **data)
-
-print(payment[1])
-
 

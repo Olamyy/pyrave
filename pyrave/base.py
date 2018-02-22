@@ -3,7 +3,6 @@ import requests
 import json
 from pyrave import __version__
 from pyrave.errors import AuthKeyError, HttpMethodError
-from pyrave.funcs import is_valid_json
 
 
 class BaseRaveAPI(object):
@@ -61,12 +60,6 @@ class BaseRaveAPI(object):
             'GET': requests.get,
             'POST': requests.post,
         }
-        # if not data or is_valid_json(data):
-        #     payload = data
-        # else:
-        #     payload = json.dumps(data)
-
-        # payload = data if is_valid_json(data) or not data else json.dumps(data)
         payload = json.dumps(data) if data else data
         request = method_map.get(method)
 
@@ -76,15 +69,11 @@ class BaseRaveAPI(object):
 
         response = request(
             url, headers=self.http_headers(), data=payload, verify=True)
-        # print(f"response is {response}")
-        print(url)
         if response.status_code == 404:
             if response.json().get('message'):
                 body = response.json()
             return response.status_code, body['status'], body['message']
         body = response.json()
-        # import pdb; pdb.set_trace()
-        print(f"body is {body}")
         if body.get('status') == 'error':
             return response.status_code, body
         if response.status_code in [200, 201]:
