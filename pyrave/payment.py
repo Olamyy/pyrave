@@ -26,6 +26,8 @@ class Payment(BaseRaveAPI):
         url = self._path(endpoint)
         request_data = encrypted_data[1].json()
         suggested_auth_request = self._exec_request("POST", url, request_data)
+        if suggested_auth_request[0] in [400, 401]:
+            return suggested_auth_request
         suggested_auth = suggested_auth_request[2].get("suggested_auth")
         if not suggested_auth:
             return suggested_auth_request
@@ -117,3 +119,33 @@ class Payment(BaseRaveAPI):
         url = self._path(endpoint)
         return self._exec_request("POST", url, request_data)
 
+
+
+import os
+os.environ["RAVE_SECRET_KEY"] = "FLWSECK-cb26302f4cedae0fdbed8eff3f8279ec-X"
+os.environ["RAVE_PUBLIC_KEY"] = "FLWPUBK-7d2b1d0a7b3f48e30299dfa251448491-X"
+
+
+a = Payment()
+data = {
+    "currency": "NGN",
+    "country": "Nigeria",
+    "amount": 5000,
+    "email": "olamyy53@gmail.com",
+    "phonenumber": "09036671876",
+    "firstname": "Lekan",
+    "lastname": "Wahab",
+    "IP": "127.0.0.1",
+    "txRef": "123r34",
+    "accountnumber": "123433453323",
+    "accountbank": "ZENITH BANK PLC",
+    "payment_type": "account",
+    'pin': "3310",
+    "suggested_auth": "PIN"
+}
+# payment = a.get_encrypted_data(action="pay", preauthorised=False, using="account", **data)
+#
+# print(payment)
+#
+#
+# # {'PBFPubKey': 'FLWPUBK-7d2b1d0a7b3f48e30299dfa251448491-X', 'client': 'P86tACtS41M=', 'alg': '3DES-24'}

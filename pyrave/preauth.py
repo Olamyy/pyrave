@@ -3,7 +3,7 @@ from pyrave.base import BaseRaveAPI
 
 class Preauth(BaseRaveAPI):
     def __init__(self):
-        super(Payment, self).__init__()
+        super(Preauth, self).__init__()
 
     def preauthorise_card(self, client, algo):
         """
@@ -14,7 +14,7 @@ class Preauth(BaseRaveAPI):
         """
         endpoint = self.payment_endpoint + "charge"
         request_data = {
-                "PBFPubKey": self.secret_key,
+                "PBFPubKey": self.public_key,
                 "client": client,
                 "alg": algo
         }
@@ -52,11 +52,11 @@ class Preauth(BaseRaveAPI):
         return self._exec_request("POST", url, request_data)
 
     def refund(self, reference_id):
-        endpoint = self.refund_transaction_endpoint + "refund"
         request_data = {
                 "ref": reference_id,
-                "SECKEY": self.secret_key
+                "seckey": self.secret_key
         }
-        url = self._path(endpoint)
+        url = self.merchant_refund_endpoint
         return self._exec_request("POST", url, request_data)
+
 

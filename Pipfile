@@ -9,11 +9,11 @@ name = "pypi"
 
 requests = "*"
 future = "*"
-mock = "*"
+
 
 [dev-packages]
 responses = "*"
-
+mock = "*"
 
 [requires]
 
