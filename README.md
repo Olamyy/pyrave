@@ -55,9 +55,10 @@ If the installation was successful, the code above should run without any error.
 If an error like ```No module named pyrave``` pops up, then the installation was not successfull. You can either raise an issue here to get it looked at or attempt to reinstall it.
 
 
-##Usage
+## Usage
 
-1. Payment
+## Payment
+
 
 The payment class was made simple enough to cover the following rave actions:
 
@@ -69,7 +70,7 @@ rave_payment = Payment()
 data = {...}
 
 ````
-A. Payment with card and account
+##### Payment with card and account
     
     
 ```python
@@ -77,7 +78,7 @@ A. Payment with card and account
 payment_with_card = rave_payment.pay(using="card", * * data)
 payment_with_account = rave_payment.pay(using="account", * * data)
 ```
-B. Getting encrypted data
+##### Getting encrypted data
 To get the encrypted data, call the Payment class' `get_encrypted_data` method. This would return a tuple of data
 ```python
 encrypted_data = rave_payment.get_encrypted_data(using="account", * * data)
@@ -92,7 +93,7 @@ encrypted_data = rave_payment.pay(using="card", return_encrypted=True , * * data
 In both cases, if the request was successful, you should be able to get each one of the encryption details by indexing `encrypted_data`
 
 
-C. Charge Validation
+##### Charge Validation
 
 To validate a charge, call the `validate_charge` method and pass the `reference` and `otp` as parameter. You can select the method that applies most to your transaction.
 ```python
@@ -100,43 +101,45 @@ validate_charge = rave_payment.validate_charge("reference", "otp", method="card"
 ```
 
 
-D. Transaction Verification
+##### Transaction Verification
 
 To verify a transaction, call the `verify_transaction` method and pass the transaction reference.
 ```python
 transaction_verification = rave_payment.verify_transaction("reference", "otp", method="card")
 ```
 
-E. Disbursements
+##### Disbursements
 
 To make disbursements, call the `disburse` method and pass the `bank_code`, `account_number`, `currency`, `amount` as parameters
 
 ```python
 disbursements = rave_payment.disburse("bank_code", "account_number", "currency", "amount")
 ```
-F. Preauthorization Capture
+##### Preauthorization Capture
 To capture preauthorization, call the `capture_preauthorised_transaction` method and pass the `transaction_reference` as parameter
 ```python
 preauthorization = rave_payment.capture_preauthorised_transaction("bank_code", "account_number", "currency", "amount")
 ```
 
-G. Transaction Refund or Void
+##### Transaction Refund or Void
 ```python
 refund_or_void = rave_payment.refund_or_void_transaction("bank_code", "account_number", "currency", "amount")
 ```
 
-H. Charge Tokenization 
+##### Charge Tokenization 
 ```python
 tokenize = rave_payment.tokenize_charge(* * data)
 ```
 
-I. Refund
+##### Refund
 ```python
 refud = rave_payment.refund(reference_id="reference_id")
 ```
 
 
-2. Transaction
+## Transaction
+
+
 The transaction Class provides support for the following rave functions:
 ````python
 from pyrave import Transaction
@@ -145,32 +148,34 @@ rave_transaction = Transaction()
 
 data = {...}
 ````
-A. Verify Transaction
+##### Verify Transaction
 
 ```python
 verify = rave_transaction.verify_transaction(* * data)
 ```
 
-B. Verify Transaction with xrequery
+##### Verify Transaction with xrequery
 ```python
 verify = rave_transaction.verify_transaction_with_xrequery(* * data)
 ```
 
-C. Get Recurrent Transactions
+##### Get Recurrent Transactions
 ```python
 verify = rave_transaction.get_reccurent_transactions()
 ```
-D. Get Recurrent Transaction
+##### Get Recurrent Transaction
 ```python
 verify = rave_transaction.get_reccurent_transaction(transaction_id="your transaction_id")
 ```
-E. Stop Recurrent Transactions
+##### Stop Recurrent Transactions
 ```python
 verify = rave_transaction.get_reccurent_transaction(transaction_data_id="your transaction_data_id")
 ```
 
 
-3. Misc
+##  Miscellaneous features
+
+
 The Misc class provides support for the following rave functions:
 ````python
 from pyrave import Misc
@@ -178,20 +183,20 @@ from pyrave import Misc
 misc = Misc()
 ````
 
-A. Get list of banks
+##### Get list of banks
 ````python
 banks = misc.get_banks()
 ````
 
-B. Get fees
+##### Get fees
 ````python
 banks = misc.get_fee(amount="your amount", currency="your currency", ptype="your ptype", card6="card's number")
 ````
 
 
-B. Get Exchange Rates
+##### Get Exchange Rates
 ````python
-banks = misc.get_exchange_rates(origin_currency="your origin currency", destination_currency="your destination currency", amount=None)
+rates = misc.get_exchange_rates(origin_currency="your origin currency", destination_currency="your destination currency", amount=None)
 ````
 
 
@@ -200,7 +205,8 @@ banks = misc.get_exchange_rates(origin_currency="your origin currency", destinat
 To contribute, fork the repo, make your  changes and create a pull request.
 
 
-##Todo
+## Todo
+
  More Tests
 
 ## Authors
