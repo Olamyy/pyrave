@@ -107,21 +107,20 @@ To verify a transaction, call the `verify_transaction` method and pass the trans
 transaction_verification = rave_payment.verify_transaction("reference", "otp", method="card")
 ```
 
-5. Disbursements
+E. Disbursements
 
 To make disbursements, call the `disburse` method and pass the `bank_code`, `account_number`, `currency`, `amount` as parameters
 
 ```python
 disbursements = rave_payment.disburse("bank_code", "account_number", "currency", "amount")
 ```
-
-E. Preauthorization Capture
+F. Preauthorization Capture
 To capture preauthorization, call the `capture_preauthorised_transaction` method and pass the `transaction_reference` as parameter
 ```python
 preauthorization = rave_payment.capture_preauthorised_transaction("bank_code", "account_number", "currency", "amount")
 ```
 
-E. Transaction Refund or Void
+G. Transaction Refund or Void
 ```python
 refund_or_void = rave_payment.refund_or_void_transaction("bank_code", "account_number", "currency", "amount")
 ```
