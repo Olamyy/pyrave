@@ -75,19 +75,19 @@ data = {...}
     
 ```python
 ## Payment with card and account
-payment_with_card = rave_payment.pay(using="card", * * data)
-payment_with_account = rave_payment.pay(using="account", * * data)
+payment_with_card = rave_payment.pay(using="card", **data)
+payment_with_account = rave_payment.pay(using="account", **data)
 ```
 ##### Getting encrypted data
 To get the encrypted data, call the Payment class' `get_encrypted_data` method. This would return a tuple of data
 ```python
-encrypted_data = rave_payment.get_encrypted_data(using="account", * * data)
+encrypted_data = rave_payment.get_encrypted_data(using="account", **data)
 ```
 
 An alternative approach to doing this is to call the pay method and pass the return_encrypted boolean as True
 
 ```python
-encrypted_data = rave_payment.pay(using="card", return_encrypted=True , * * data)
+encrypted_data = rave_payment.pay(using="card", return_encrypted=True , **data)
 ```
 
 In both cases, if the request was successful, you should be able to get each one of the encryption details by indexing `encrypted_data`
@@ -128,7 +128,7 @@ refund_or_void = rave_payment.refund_or_void_transaction("bank_code", "account_n
 
 ##### Charge Tokenization 
 ```python
-tokenize = rave_payment.tokenize_charge(* * data)
+tokenize = rave_payment.tokenize_charge(**data)
 ```
 
 ##### Refund
@@ -151,12 +151,12 @@ data = {...}
 ##### Verify Transaction
 
 ```python
-verify = rave_transaction.verify_transaction(* * data)
+verify = rave_transaction.verify_transaction(**data)
 ```
 
 ##### Verify Transaction with xrequery
 ```python
-verify = rave_transaction.verify_transaction_with_xrequery(* * data)
+verify = rave_transaction.verify_transaction_with_xrequery(**data)
 ```
 
 ##### Get Recurrent Transactions
