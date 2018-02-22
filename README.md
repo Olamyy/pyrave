@@ -207,12 +207,12 @@ preauth.preauthorise_card(client="client id", algo="algo used")
 ##### Preauthorization Capture
 To capture preauthorization, call the `capture_preauthorised_transaction` method and pass the `transaction_reference` as parameter
 ```python
-preauthorization = preauth.capture_preauthorised_transaction("bank_code", "account_number", "currency", "amount")
+preauthorization = preauth.capture_preauthorised_transaction(transaction_reference="your transaction reference")
 ```
 
 ##### Transaction Refund or Void
 ```python
-refund_or_void = preauth.refund_or_void_transaction("bank_code", "account_number", "currency", "amount")
+refund_or_void = preauth.refund_or_void_transaction(action="refund or void", reference_id="your reference id")
 ```
 
 
