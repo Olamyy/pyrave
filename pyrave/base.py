@@ -21,6 +21,8 @@ class BaseRaveAPI(object):
     disbursement_endpoint = "merchant/disburse"
     recurring_transaction_endpoint = "merchant/subscriptions/"
     refund_transaction_endpoint = "merchant/refund/"
+    merchant_refund_endpoint = _base_url.get("test").replace("flwv3-pug", "gpx/merchant/transactions/refund")
+    print(merchant_refund_endpoint)
     _docs_url = ""
 
     def __init__(self, implementation="test"):
@@ -42,18 +44,18 @@ class BaseRaveAPI(object):
             "user-agent": "pyrave-{}".format(__version__)
         }
 
-    def _json_parser(self, json_response):
+    def _json_parser(self, body):
         """Only the status code, the status of the request and the data
         is sent back. the message is irrelevant if ths request was successful"""
-        response = json_response.json()
+        response = body.json()
         status = response.get('status', None)
         message = response.get('message', None)
         data = response.get('data', None)
-        if not data:
-            return json_response.status_code, json_response
+        if not data or not status or not message:
+            return response
         if message:
-            return json_response.status_code, status, data, message
-        return json_response.status_code, status, data
+            return body.status_code, status, data, message
+        return body.status_code, status, data
 
     def _exec_request(self, method, url, data=None):
         method_map = {
@@ -69,10 +71,13 @@ class BaseRaveAPI(object):
 
         response = request(
             url, headers=self.http_headers(), data=payload, verify=True)
+        print(response)
+        print(url)
         if response.status_code == 404:
-            if response.json().get('message'):
+            if response.json():
                 body = response.json()
-            return response.status_code, body['status'], body['message']
+                return response.status_code, body['status'], body['message']
+            return response.status_code
         body = response.json()
         if isinstance(body, list):
             return body
