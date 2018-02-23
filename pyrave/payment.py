@@ -62,7 +62,7 @@ class Payment(BaseRaveAPI):
         :return:
         """
         request_data = {
-            "PBFPubKey": self.secret_key,
+            "PBFPubKey": self.public_key,
             "otp": otp
         }
         endpoint = self.payment_endpoint + "validatecharge" if method == "card" else self.payment_endpoint + "validate"
