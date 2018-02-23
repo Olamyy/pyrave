@@ -22,8 +22,7 @@ class BaseRaveAPI(object):
     recurring_transaction_endpoint = "merchant/subscriptions/"
     refund_transaction_endpoint = "merchant/refund/"
     merchant_refund_endpoint = _base_url.get("test").replace("flwv3-pug", "gpx/merchant/transactions/refund")
-    print(merchant_refund_endpoint)
-    _docs_url = ""
+    _docs_url = "https://github.com/Olamyy/pyrave/blob/master/README.md"
 
     def __init__(self, implementation="test"):
         self.public_key = os.getenv("RAVE_PUBLIC_KEY", None)
@@ -71,8 +70,6 @@ class BaseRaveAPI(object):
 
         response = request(
             url, headers=self.http_headers(), data=payload, verify=True)
-        print(response)
-        print(url)
         if response.status_code == 404:
             if response.json():
                 body = response.json()

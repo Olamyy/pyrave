@@ -19,8 +19,6 @@ class Payment(BaseRaveAPI):
         """
         rave_enc = RaveEncryption()
         endpoint = self.payment_endpoint + "charge"
-        # for i,v in kwargs.items():
-        #     print(f"{i} : {v}")
         if not kwargs.get("txRef"):
             kwargs["txRef"] = generate_id("txRef")
         if not kwargs.get("device_fingerprint"):
@@ -123,38 +121,4 @@ class Payment(BaseRaveAPI):
         url = self._path(endpoint)
         return self._exec_request("POST", url, request_data)
 
-
-
-import os
-os.environ["RAVE_SECRET_KEY"] = "FLWSECK-cb26302f4cedae0fdbed8eff3f8279ec-X"
-os.environ["RAVE_PUBLIC_KEY"] = "FLWPUBK-7d2b1d0a7b3f48e30299dfa251448491-X"
-
-
-rave_payment = Payment()
-data = {
-    "currency": "NGN",
-    "country": "Nigeria",
-    "amount": 5000,
-    "email": "olamyy53@gmail.com",
-    "phonenumber": "09036671876",
-    "firstname": "Lekan",
-    "lastname": "Wahab",
-    "IP": "127.0.0.1",
-    "txRef": "123r34",
-    "accountnumber": "123433453323",
-    "accountbank": "ZENITH BANK PLC",
-    "payment_type": "account",
-    "device_fingerprint": "derjfio32434iojfd",
-    "cardno": "5438898014560229",
-    "ccv": "789",
-    "expirymonth": "09",
-    "expiryyear": "19",
-    "pin": "3310",
-
-    # 'pin': "3310",
-    # "suggested_auth": "PIN"
-}
-payment = rave_payment.pay(using="card", **data)
-
-print(payment[1])
 
