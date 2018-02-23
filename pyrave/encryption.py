@@ -2,6 +2,10 @@ from pyrave.base import BaseRaveAPI
 
 
 class RaveEncryption(BaseRaveAPI):
+    """
+    Base Encryption Class
+    Encrypts User Details and returns pubkey, client and algo
+    """
     def __init__(self):
         super(RaveEncryption, self).__init__()
 

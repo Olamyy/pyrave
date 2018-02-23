@@ -2,6 +2,10 @@ from pyrave.base import BaseRaveAPI
 
 
 class Preauth(BaseRaveAPI):
+    """
+    Preauthorization Class
+
+    """
     def __init__(self):
         super(Preauth, self).__init__()
 

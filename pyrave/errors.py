@@ -14,8 +14,14 @@ class AuthKeyError(PyRaveError):
 
 
 class HttpMethodError(PyRaveError):
+    """
+    Any HTTP related error.
+    """
     pass
 
 
 class MissingParamError(PyRaveError):
+    """
+    Errors relating to missing parameters
+    """
     pass

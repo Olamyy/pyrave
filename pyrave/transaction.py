@@ -2,6 +2,11 @@ from pyrave.base import BaseRaveAPI
 
 
 class Transaction(BaseRaveAPI):
+    """
+    Transaction Classs.
+    Handles Transaction Verification and requery.
+    Also handles recurrent transaction.
+    """
     def __init__(self):
         super(Transaction, self).__init__()
 
