@@ -7,7 +7,7 @@ from pyrave.errors import AuthKeyError, HttpMethodError
 
 class BaseRaveAPI(object):
     """
-
+        Base PyRave API
     """
 
     _content_type = "application/json"

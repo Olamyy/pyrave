@@ -2,6 +2,9 @@ from pyrave.base import BaseRaveAPI
 
 
 class Misc(BaseRaveAPI):
+    """
+    Base Miscellaneous class
+    """
     def __init__(self):
         super(Misc, self).__init__()
 

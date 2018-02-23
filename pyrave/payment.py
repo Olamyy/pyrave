@@ -5,8 +5,12 @@ from pyrave.utils import generate_id
 
 
 class Payment(BaseRaveAPI):
+    """
+    Payment API
+    """
     def __init__(self):
         super(Payment, self).__init__()
+        self.rave_enc = RaveEncryption()
 
     def pay(self, using="card", preauthorised=False, return_encrypted=False, **kwargs):
         """
@@ -17,13 +21,12 @@ class Payment(BaseRaveAPI):
         :param return_encrypted:
         :return:
         """
-        rave_enc = RaveEncryption()
         endpoint = self.payment_endpoint + "charge"
         if not kwargs.get("txRef"):
             kwargs["txRef"] = generate_id("txRef")
         if not kwargs.get("device_fingerprint"):
             kwargs["device_fingerprint"] = generate_id("device_fingerprint")
-        encrypted_data = rave_enc.encrypt(using, preauthorised, **kwargs)
+        encrypted_data = self.rave_enc.encrypt(using, preauthorised, **kwargs)
         if return_encrypted:
             return encrypted_data
         url = self._path(endpoint)
@@ -48,8 +51,7 @@ class Payment(BaseRaveAPI):
         :param kwargs:
         :return:
         """
-        rave_enc = RaveEncryption()
-        return rave_enc.encrypt(using, preauthorised, **kwargs)
+        return self.rave_enc.encrypt(using, preauthorised, **kwargs)
 
     def validate_charge(self, reference, otp, method="card"):
         """
