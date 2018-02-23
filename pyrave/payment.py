@@ -101,7 +101,7 @@ class Payment(BaseRaveAPI):
                 "amount": amount,
                 "seckey": self.secret_key
         }
-        url = self._path(self.disbursement_endpoint)
+        url = self.disbursement_endpoint
         return self._exec_request("POST", url, request_data)
 
     def tokenize_charge(self, **kwargs):
@@ -122,5 +122,6 @@ class Payment(BaseRaveAPI):
         }
         url = self._path(endpoint)
         return self._exec_request("POST", url, request_data)
+
 
 

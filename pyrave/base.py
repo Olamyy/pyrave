@@ -18,7 +18,7 @@ class BaseRaveAPI(object):
     test_encryption_url = "https://ravecrypt.herokuapp.com/rave/encrypt"
     live_encryption_url = ""
     payment_endpoint = "getpaidx/api/"
-    disbursement_endpoint = "merchant/disburse"
+    disbursement_endpoint = _base_url.get("test").replace("flwv3-pug", "merchant/disburse")
     recurring_transaction_endpoint = "merchant/subscriptions/"
     refund_transaction_endpoint = "merchant/refund/"
     merchant_refund_endpoint = _base_url.get("test").replace("flwv3-pug", "gpx/merchant/transactions/refund")
@@ -70,11 +70,16 @@ class BaseRaveAPI(object):
 
         response = request(
             url, headers=self.http_headers(), data=payload, verify=True)
+
         if response.status_code == 404:
-            if response.json():
-                body = response.json()
-                return response.status_code, body['status'], body['message']
-            return response.status_code
+            try:
+                if response.json():
+                    body = response.json()
+                    return response.status_code, body['status'], body['message']
+                return response.status_code
+            except json.decoder.JSONDecodeError:
+                print("{} returns a 404.".format(url))
+                return response
         body = response.json()
         if isinstance(body, list):
             return body
