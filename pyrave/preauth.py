@@ -1,3 +1,4 @@
+from pyrave import RaveEncryption
 from pyrave.base import BaseRaveAPI
 
 
@@ -6,10 +7,12 @@ class Preauth(BaseRaveAPI):
     Preauthorization Class
 
     """
+
     def __init__(self):
         super(Preauth, self).__init__()
+        self.rave_enc = RaveEncryption()
 
-    def preauthorise_card(self, client, algo, log_url=False):
+    def preauthorise_card(self, log_url=False, **kwargs):
         """
 
         :param log_url:
@@ -17,10 +20,13 @@ class Preauth(BaseRaveAPI):
         :param algo:
         :return:
         """
+        encrypted_data = self.rave_enc.encrypt(preauthorised=True, **kwargs)
+        if not encrypted_data:
+            return encrypted_data
         request_data = {
-                "PBFPubKey": self.public_key,
-                "client": client,
-                "alg": algo
+            "PBFPubKey": self.secret_key,
+            "client": encrypted_data[1],
+            "algo": encrypted_data[2]
         }
         url = self.rave_url_map.get("payment_endpoint") + "charge"
         return self._exec_request("POST", url, request_data, log_url=log_url)
@@ -33,8 +39,8 @@ class Preauth(BaseRaveAPI):
         :return:
         """
         request_data = {
-                "SECKEY": self.secret_key,
-                "flwRef": transaction_reference,
+            "SECKEY": self.secret_key,
+            "flwRef": transaction_reference,
         }
         url = self.rave_url_map.get("payment_endpoint") + "capture"
         return self._exec_request("POST", url, request_data, log_url=log_url)
@@ -48,20 +54,17 @@ class Preauth(BaseRaveAPI):
         :return:
         """
         request_data = {
-                "ref": reference_id,
-                "action": action,
-                "SECKEY": self.secret_key
+            "ref": reference_id,
+            "action": action,
+            "SECKEY": self.secret_key
         }
         url = self.rave_url_map.get("payment_endpoint") + "refundorvoid"
         return self._exec_request("POST", url, request_data, log_url=log_url)
 
     def refund(self, reference_id, log_url=False):
         request_data = {
-                "ref": reference_id,
-                "seckey": self.secret_key
+            "ref": reference_id,
+            "seckey": self.secret_key
         }
         url = self.rave_url_map.get("merchant_refund_endpoint")
         return self._exec_request("POST", url, request_data, log_url=log_url)
-
-
-
