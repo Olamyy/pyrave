@@ -11,17 +11,18 @@ class Payment(BaseRaveAPI):
     def __init__(self):
         super(Payment, self).__init__()
         self.rave_enc = RaveEncryption()
+        self.url = ""
 
-    def pay(self, using="card", preauthorised=False, return_encrypted=False, **kwargs):
+    def pay(self, using="card", preauthorised=False, return_encrypted=False, log_url=False, **kwargs):
         """
 
+        :param log_url:
         :param using:
         :param preauthorised:
         :param kwargs:
         :param return_encrypted:
         :return:
         """
-        endpoint = self.payment_endpoint + "charge"
         if not kwargs.get("txRef"):
             kwargs["txRef"] = generate_id("txRef")
         if not kwargs.get("device_fingerprint"):
@@ -29,7 +30,7 @@ class Payment(BaseRaveAPI):
         encrypted_data = self.rave_enc.encrypt(using, preauthorised, **kwargs)
         if return_encrypted:
             return encrypted_data
-        url = self._path(endpoint)
+        url = self.rave_url_map.get("payment_endpoint") + "charge"
         request_data = encrypted_data
         suggested_auth_request = self._exec_request("POST", url, request_data)
         if suggested_auth_request[0] in [400, 401]:
@@ -41,21 +42,24 @@ class Payment(BaseRaveAPI):
                 raise MissingParamError("You need to set the pin parameter in the function call "
                                         "to make a payment")
         request_data["suggested_auth"] = suggested_auth
-        return self._exec_request("POST", url, request_data)
+        return self._exec_request("POST", url, request_data, log_url=log_url)
 
-    def get_encrypted_data(self,using="card", preauthorised=False, **kwargs):
+    def get_encrypted_data(self, using="card", preauthorised=False, log_url=False, **kwargs):
         """
 
+        :param log_url:
         :param using:
         :param preauthorised:
         :param kwargs:
         :return:
         """
-        return self.rave_enc.encrypt(using, preauthorised, **kwargs)
 
-    def validate_charge(self, reference, otp, method="card"):
+        return self.rave_enc.encrypt(using, preauthorised, log_url=log_url, **kwargs)
+
+    def validate_charge(self, reference, otp, method="card", log_url=False,):
         """
 
+        :param log_url:
         :param reference:
         :param otp:
         :param method:
@@ -65,29 +69,29 @@ class Payment(BaseRaveAPI):
             "PBFPubKey": self.public_key,
             "otp": otp
         }
-        endpoint = self.payment_endpoint + "validatecharge" if method == "card" else self.payment_endpoint + "validate"
         request_data.update({"transaction_reference": reference}) if method == "card" else request_data.update({"transactionreference": reference})
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
+        url = self.rave_url_map.get("payment_endpoint") + "validatecharge" if method == "card" else self.rave_url_map.get("payment_endpoint") + "validate"
+        return self._exec_request("POST", url, request_data, log_url=log_url)
 
-    def verify_transaction(self, reference, normalize="1"):
+    def verify_transaction(self, reference, normalize="1", log_url=False,):
         """
 
+        :param log_url:
         :param reference:
         :param normalize:
         :return:
         """
-        endpoint = self.payment_endpoint + "verify"
         request_data = {
             "flw_ref": reference,
             "SECKEY": self.secret_key,
             "normalize": normalize
         }
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
+        url = self.rave_url_map.get("payment_endpoint") + "verify"
+        return self._exec_request("POST", url, request_data, log_url=log_url)
 
-    def disburse(self, bank_code, account_number, currency, amount):
+    def disburse(self, bank_code, account_number, currency, amount, log_url=False,):
         """
+        :param log_url:
         :param bank_code:
         :param account_number:
         :param currency:
@@ -101,26 +105,27 @@ class Payment(BaseRaveAPI):
                 "amount": amount,
                 "seckey": self.secret_key
         }
-        url = self._path(self.disbursement_endpoint)
-        return self._exec_request("POST", url, request_data)
+        url = self.rave_url_map.get("disbursement_endpoint")
+        return self._exec_request("POST", url, request_data, log_url=log_url)
 
-    def tokenize_charge(self, **kwargs):
+    def tokenize_charge(self, token, log_url=False, **kwargs):
         """
 
+        :param token:
+        :param log_url:
         :param kwargs:
         :return:
         """
-        endpoint = self.payment_endpoint + "tokenized/charge"
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, kwargs)
+        kwargs["SECKEY"] = self.secret_key
+        kwargs["token"] = token
+        url = self.rave_url_map.get("payment_endpoint") + "tokenized/charge"
+        return self._exec_request("POST", url, kwargs, log_url=log_url)
 
-    def refund(self, reference_id):
-        endpoint = self.refund_transaction_endpoint + "refund"
+    def refund(self, reference_id, log_url=False,):
         request_data = {
                 "ref": reference_id,
-                "SECKEY": self.secret_key
+                "seckey": self.secret_key,
         }
-        url = self._path(endpoint)
-        return self._exec_request("POST", url, request_data)
-
+        url = self.rave_url_map.get("merchant_refund_endpoint")
+        return self._exec_request("POST", url, request_data, log_url=log_url)
 

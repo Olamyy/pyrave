@@ -9,12 +9,11 @@ class Misc(BaseRaveAPI):
         super(Misc, self).__init__()
 
     def get_banks(self):
-        endpoint = self.payment_endpoint + "flwpbf-banks.js?json=1"
         """
 
         :return:
         """
-        url = self._path(endpoint)
+        url = self.rave_url_map.get("payment_endpoint") + "flwpbf-banks.js?json=1"
         return self._exec_request('GET', url)
 
     def get_fee(self, amount, currency, ptype, card6=None):
@@ -29,7 +28,6 @@ class Misc(BaseRaveAPI):
                     if the card being used is an international card
         :return:
         """
-        endpoint = self.payment_endpoint + "fee"
         request_data = {
             "amount": amount,
             "currency": currency,
@@ -37,7 +35,7 @@ class Misc(BaseRaveAPI):
             "PBFPubKey": self.public_key,
             "card6": card6,
         }
-        url = self._path(endpoint)
+        url = self.rave_url_map.get("payment_endpoint") + "fee"
         return self._exec_request('POST', url, request_data)
 
     def get_exchange_rates(self, origin_currency, destination_currency, amount=None):
@@ -48,7 +46,6 @@ class Misc(BaseRaveAPI):
         :param destination_currency:
         :return:
         """
-        endpoint = self.payment_endpoint + "forex"
         request_data = {
             "origin_currency": origin_currency,
             "destination_currency": destination_currency,
@@ -56,6 +53,5 @@ class Misc(BaseRaveAPI):
         }
         if amount:
             request_data["amount"] = amount
-        url = self._path(endpoint)
+        url = self.rave_url_map.get("payment_endpoint") + "forex"
         return self._exec_request('POST', url, request_data)
-
