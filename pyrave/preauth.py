@@ -1,4 +1,4 @@
-from pyrave import RaveEncryption
+from pyrave.encryption import RaveEncryption
 from pyrave.base import BaseRaveAPI
 
 

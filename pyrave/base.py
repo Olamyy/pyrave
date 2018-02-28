@@ -87,7 +87,7 @@ class BaseRaveAPI(object):
                     body = response.json()
                     return response.status_code, body['status'], body['message']
                 return response.status_code
-            except json.decoder.JSONDecodeError:
+            except ValueError or json.decoder.JSONDecodeError:
                 return response.status_code, "{} returns a 404.".format(url)
         body = response.json()
         if isinstance(body, list):

@@ -10,6 +10,8 @@ name = "pypi"
 requests = "*"
 future = "*"
 crypto = "*"
+six = "*"
+pycrypto = "*"
 
 
 [dev-packages]
