@@ -13,16 +13,11 @@ class BaseRaveAPI(object):
     def __init__(self, implementation="test"):
         self.public_key = os.getenv("RAVE_PUBLIC_KEY", None)
         self.secret_key = os.getenv("RAVE_SECRET_KEY", None)
-        if not self.public_key and not self.secret_key:
-            raise AuthKeyError("The secret keys have not been set in your environment. You should get this from your rave "
-                               "dashboard and set it in your env. Check {0} for more information".format(self.rave_url_map.get("docs_url")))
-
-        self._content_type = "application/json"
+        self.implementation = implementation
         self._base_url = {
             "test": "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/",
             "live": "https://api.ravepay.co/"
         }
-        self.implementation = implementation
         self.rave_url_map = {
             "test_encryption_url": "https://ravecrypt.herokuapp.com/rave/encrypt",
             "live_encryption_url": "",
@@ -32,6 +27,11 @@ class BaseRaveAPI(object):
             "merchant_refund_endpoint": self._base_url.get(self.implementation) + "gpx/merchant/transactions/refund",
             "docs_url": "https://github.com/Olamyy/pyrave/blob/master/README.md"
         }
+        if not self.public_key and not self.secret_key:
+            raise AuthKeyError("The secret keys have not been set in your environment. You should get this from your rave "
+                               "dashboard and set it in your env. Check {0} for more information".format(self.rave_url_map.get("docs_url")))
+
+        self._content_type = "application/json"
 
     def _path(self, path):
         url_path = self._base_url.get(self.implementation)

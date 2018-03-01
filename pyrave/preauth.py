@@ -1,5 +1,5 @@
-from pyrave.encryption import RaveEncryption
 from pyrave.base import BaseRaveAPI
+from pyrave.encryption import RaveEncryption
 
 
 class Preauth(BaseRaveAPI):

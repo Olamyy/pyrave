@@ -12,6 +12,7 @@ future = "*"
 crypto = "*"
 six = "*"
 pycrypto = "*"
+mock = "*"
 
 
 [dev-packages]
