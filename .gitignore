@@ -10,7 +10,6 @@ source.sh
 .cache
 venv/
 venv-2/
-test.py
 pyrave.egg-info
 dist
 
