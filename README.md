@@ -216,6 +216,25 @@ refund_or_void = preauth.refund_or_void_transaction(action="refund or void", ref
 ```
 
 
+## Encryption
+
+````python
+from pyrave import RaveEncryption
+   
+rave_encryption = RaveEncryption()
+````
+
+#### Encrypt user data
+```python
+rave_encryption.encrypt(using=["card or account"], **data)
+```
+
+##### Encrypt using DES3
+```python
+refund_or_void = rave_encryption.pyrave_encrypt(**data)
+```
+
+
 ## Contributing
 
 To contribute, fork the repo, make your  changes and create a pull request.
