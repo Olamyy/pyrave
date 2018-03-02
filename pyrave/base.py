@@ -11,7 +11,7 @@ class BaseRaveAPI(object):
         Base PyRave API
     """
 
-    def __init__(self, implementation="test"):
+    def __init__(self, implementation):
         self.public_key = os.getenv("RAVE_PUBLIC_KEY", None)
         self.secret_key = os.getenv("RAVE_SECRET_KEY", None)
         self.implementation = implementation

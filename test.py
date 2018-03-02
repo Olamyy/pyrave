@@ -106,9 +106,10 @@ class TestPayment(TestCase):
             "lastname": "Wahab",
             "IP": "127.0.0.1",
             "txRef": "123r34",
-            "accountnumber": "123433453323",
-            "accountbank": "ZENITH BANK PLC",
-            "payment_type": "account",
+            "cardno": "5438898014560229",
+            "cvv": "789",
+            "expiryyear": "19",
+            "expirymonth": "09",
         }
 
         response = {

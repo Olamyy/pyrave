@@ -9,10 +9,9 @@ class Payment(BaseRaveAPI):
     Payment API
     """
 
-    def __init__(self):
-        super(Payment, self).__init__()
-        self.rave_enc = RaveEncryption()
-        self.url = ""
+    def __init__(self, implementation):
+        super(Payment, self).__init__(implementation)
+        self.rave_enc = RaveEncryption(implementation)
 
     def pay(self, using="card", preauthorised=False, return_encrypted=False, log_url=False, **kwargs):
         """
@@ -32,6 +31,7 @@ class Payment(BaseRaveAPI):
         if return_encrypted:
             return encrypted_data
         url = self.rave_url_map.get("payment_endpoint") + "charge"
+        print(encrypted_data)
         suggested_auth_request = self._exec_request("POST", url, encrypted_data)
         if suggested_auth_request[0] in [400, 401]:
             return suggested_auth_request
@@ -128,5 +128,4 @@ class Payment(BaseRaveAPI):
         }
         url = self.rave_url_map.get("merchant_refund_endpoint")
         return self._exec_request("POST", url, request_data, log_url=log_url)
-
 
