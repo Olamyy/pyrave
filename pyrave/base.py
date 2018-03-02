@@ -1,3 +1,4 @@
+import hashlib
 import os
 import requests
 import json
@@ -27,6 +28,9 @@ class BaseRaveAPI(object):
             "merchant_refund_endpoint": self._base_url.get(self.implementation) + "gpx/merchant/transactions/refund",
             "docs_url": "https://github.com/Olamyy/pyrave/blob/master/README.md"
         }
+
+        self.encryption_key = self._get_encryption_key()
+
         if not self.public_key and not self.secret_key:
             raise AuthKeyError("The secret keys have not been set in your environment. You should get this from your rave "
                                "dashboard and set it in your env. Check {0} for more information".format(self.rave_url_map.get("docs_url")))
@@ -36,6 +40,13 @@ class BaseRaveAPI(object):
     def _path(self, path):
         url_path = self._base_url.get(self.implementation)
         return url_path + path
+
+    def _get_encryption_key(self):
+        hashedseckey = hashlib.md5(self.secret_key.encode("utf-8")).hexdigest()
+        hashedseckeylast12 = hashedseckey[-12:]
+        seckeyadjusted = self.secret_key.replace('FLWSECK-', '')
+        seckeyadjustedfirst12 = seckeyadjusted[:12]
+        return seckeyadjustedfirst12 + hashedseckeylast12
 
     def get_url(self, resource=None):
         """

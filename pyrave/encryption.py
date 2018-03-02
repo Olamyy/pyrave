@@ -49,25 +49,24 @@ class RaveEncryption(BaseRaveAPI):
             "form.accountbank": kwargs.get("accountbank"),
             "form.payment_type": kwargs.get("payment_type", "account")
         }
-        url = self.rave_url_map.get("test_encryption_url") if self.implementation == "test" else self.pyrave_encrypt(**kwargs)
+        url = self.rave_url_map.get("test_encryption_url") if self.implementation == "test" else self.rave_url_map.get("live_encryption_url")
         if using == "account":
             account_params.update(common_params)
             return self._exec_request("POST", url, data=account_params)
         card_params.update(common_params)
+
         return self._exec_request("POST", url, data=card_params, log_url=log_url)
 
-    def pyrave_encrypt(self,  **kwargs):
-        hashedseckey = hashlib.md5(self.secret_key.encode("utf-8")).hexdigest()
-        hashedseckeylast12 = hashedseckey[-12:]
-        seckeyadjusted = self.secret_key.replace('FLWSECK-', '')
-        seckeyadjustedfirst12 = seckeyadjusted[:12]
-        key = seckeyadjustedfirst12 + hashedseckeylast12
+    def pyrave_encrypt(self,  plain_text):
         blockSize = 8
-        padDiff = blockSize - (len(kwargs) % blockSize)
-        cipher = DES3.new(key, DES3.MODE_ECB)
-        plainText = "{}{}".format(kwargs, "".join(chr(padDiff) * padDiff))
-        encrypted = base64.b64encode(cipher.encrypt(plainText))
-        return encrypted
+        padDiff = blockSize - (len(plain_text) % blockSize)
+        cipher = DES3.new(self.encryption_key, DES3.MODE_ECB)
 
+        plain_text = "{}{}".format(plain_text, "".join(chr(padDiff) * padDiff))
+        return base64.b64encode(cipher.encrypt(plain_text)).decode('utf-8')
 
+    def integrity_checksum(self, **kwargs):
+        plain_text = self.secret_key + ''.join(
+            **kwargs)
+        return self.pyrave_encrypt(plain_text)
 
