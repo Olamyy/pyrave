@@ -50,9 +50,19 @@ Upon completion, try to import the library with
 import pyrave
 ```
 
-If the installation was successful, the code above should run without any error.
+If the installation was successful, the code above should run without any error. 
 
-If an error like ```No module named pyrave``` pops up, then the installation was not successfull. You can either raise an issue here to get it looked at or attempt to reinstall it.
+
+If the installtion was not successful, check below for the possible error that might have caused it.
+
+## Installation Errors and Possible Fix
+
+##### 1. ImportError: No module named Crypto.Cipher
+
+Solution:
+
+Activate your venv and run `pip install pycrypto` in it. Then try re-installing the package again
+
 
 
 ## Usage
