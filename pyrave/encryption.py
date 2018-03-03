@@ -8,8 +8,8 @@ class RaveEncryption(BaseRaveAPI):
     Base Encryption Class
     Encrypts User Details and returns pubkey, client and algo
     """
-    def __init__(self, implementation):
-        super(RaveEncryption, self).__init__(implementation)
+    def __init__(self):
+        super(RaveEncryption, self).__init__()
 
     def pyrave_encrypt(self, plain_text):
         blockSize = 8

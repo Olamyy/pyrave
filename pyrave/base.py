@@ -11,10 +11,20 @@ class BaseRaveAPI(object):
         Base PyRave API
     """
 
-    def __init__(self, implementation):
+    def __init__(self):
+        """
+        The __init__ method sets some needed defaults.
+        """
         self.public_key = os.getenv("RAVE_PUBLIC_KEY", None)
         self.secret_key = os.getenv("RAVE_SECRET_KEY", None)
-        self.implementation = implementation
+        self.docs_url = "https://github.com/Olamyy/pyrave/blob/master/README.md"
+        if not self.public_key and not self.secret_key:
+            raise AuthKeyError("The secret keys have not been set in your environment. You should get this from your rave "
+                               "dashboard and set it in your env. Check {0} for more information".format(self.docs_url))
+        assert os.environ.get("RAVE_DEBUG"), "The RAVE_DEBUG environment variable should be set. Set it to 1 in test mode and 0 in live mode. " \
+                                             "Check {0} for more information".format(self.docs_url)
+        self.implementation = "test" if os.environ["RAVE_DEBUG"] == 1 else "live"
+        self._content_type = "application/json"
         self._base_url = {
             "test": "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/",
             "live": "https://api.ravepay.co/"
@@ -26,22 +36,23 @@ class BaseRaveAPI(object):
             "disbursement_endpoint": self._base_url.get(self.implementation) + "merchant/disburse",
             "recurring_transaction_endpoint": self._base_url.get(self.implementation) + "merchant/subscriptions",
             "merchant_refund_endpoint": self._base_url.get(self.implementation) + "gpx/merchant/transactions/refund",
-            "docs_url": "https://github.com/Olamyy/pyrave/blob/master/README.md"
         }
-
         self.encryption_key = self._get_encryption_key()
 
-        if not self.public_key and not self.secret_key:
-            raise AuthKeyError("The secret keys have not been set in your environment. You should get this from your rave "
-                               "dashboard and set it in your env. Check {0} for more information".format(self.rave_url_map.get("docs_url")))
-
-        self._content_type = "application/json"
-
     def _path(self, path):
+        """
+        Builds full path given a uri based on the _base_url dict from __init__.
+        :param path:
+        :return:
+        """
         url_path = self._base_url.get(self.implementation)
         return url_path + path
 
     def _get_encryption_key(self):
+        """
+        Generates encryption key for user
+        :return:
+        """
         hashedseckey = hashlib.md5(self.secret_key.encode("utf-8")).hexdigest()
         hashedseckeylast12 = hashedseckey[-12:]
         seckeyadjusted = self.secret_key.replace('FLWSECK-', '')
@@ -50,13 +61,17 @@ class BaseRaveAPI(object):
 
     def get_url(self, resource=None):
         """
-
+        Retrieve a url from the rave_url_map dict in __init__.
         :param resource:
         :return:
         """
         return self.rave_url_map.get(resource) if resource else self.rave_url_map
 
     def http_headers(self):
+        """
+        Setting http headers
+        :return:
+        """
         return {
             "Content-Type": self._content_type,
             "Authorization": "Bearer " + self.secret_key,
@@ -77,6 +92,15 @@ class BaseRaveAPI(object):
         return body.status_code, status, data
 
     def _exec_request(self, method, url, data=None, params=False, log_url=False):
+        """
+        Main HTTP request execution method.
+        :param method:
+        :param url:
+        :param data:
+        :param params:
+        :param log_url:
+        :return:
+        """
         method_map = {
             'GET': requests.get,
             'POST': requests.post,

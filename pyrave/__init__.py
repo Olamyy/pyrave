@@ -1,4 +1,4 @@
-__version__ = '1.0.1-b'
+__version__ = '1.0.2-alpha'
 __author__ = "Olamilekan Wahab"
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2017. Olamilekan Wahab'

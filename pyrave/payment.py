@@ -9,9 +9,9 @@ class Payment(BaseRaveAPI):
     Payment API
     """
 
-    def __init__(self, implementation):
-        super(Payment, self).__init__(implementation)
-        self.rave_enc = RaveEncryption(implementation)
+    def __init__(self):
+        super(Payment, self).__init__()
+        self.rave_enc = RaveEncryption()
 
     def pay(self, using="card", preauthorised=False, return_encrypted=False, log_url=False, **kwargs):
         """
