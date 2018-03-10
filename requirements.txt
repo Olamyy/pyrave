@@ -1,4 +1,4 @@
-Crypto
+pycrypto
 requests
 future 
 six

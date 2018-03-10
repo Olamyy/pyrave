@@ -23,7 +23,7 @@ class BaseRaveAPI(object):
                                "dashboard and set it in your env. Check {0} for more information".format(self.docs_url))
         assert os.environ.get("RAVE_DEBUG"), "The RAVE_DEBUG environment variable should be set. Set it to 1 in test mode and 0 in live mode. " \
                                              "Check {0} for more information".format(self.docs_url)
-        self.implementation = "test" if os.environ["RAVE_DEBUG"] == 1 else "live"
+        self.implementation = "test" if os.environ["RAVE_DEBUG"] == "1" else "live"
         self._content_type = "application/json"
         self._base_url = {
             "test": "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com/",
@@ -37,6 +37,7 @@ class BaseRaveAPI(object):
             "recurring_transaction_endpoint": self._base_url.get(self.implementation) + "merchant/subscriptions",
             "merchant_refund_endpoint": self._base_url.get(self.implementation) + "gpx/merchant/transactions/refund",
         }
+
         self.encryption_key = self._get_encryption_key()
 
     def _path(self, path):
@@ -132,3 +133,4 @@ class BaseRaveAPI(object):
         if response.status_code in [200, 201]:
             return self._json_parser(response)
         response.raise_for_status()
+

@@ -19,9 +19,12 @@ class RaveEncryption(BaseRaveAPI):
         return base64.b64encode(cipher.encrypt(plain_text)).decode('utf-8')
 
     def integrity_checksum(self, **kwargs):
-        plain_text = self.secret_key + ''.join(
+        values = []
+        for key in sorted(kwargs.keys()):
+            values.append(kwargs[key])
+        text = self.secret_key + ''.join(
                 kwargs)
-        return self.pyrave_encrypt(plain_text)
+        return self.pyrave_encrypt(text)
 
     def encrypt(self, using='card', preauthorised=False, log_url=False, **kwargs):
         """
@@ -33,45 +36,57 @@ class RaveEncryption(BaseRaveAPI):
         :return:
         """
         common_params = {
-            "seckey": self.secret_key,
-            "pubkey": self.public_key,
-            "form.PBFPubKey": self.public_key,
-            "form.currency": kwargs.get('currency'),
-            "form.country": kwargs.get('country'),
-            "form.amount": kwargs.get('amount'),
-            "form.email": kwargs.get('email'),
-            "form.phonenumber": kwargs.get('phonenumber'),
-            "form.firstname": kwargs.get('firstname'),
-            "form.lastname": kwargs.get('lastname'),
-            "form.IP": kwargs.get('IP'),
-            "form.txRef": kwargs.get('txRef'),
-            "form.device_fingerprint": kwargs.get('device_fingerprint', False)
+            "PBFPubKey": self.public_key,
+            "currency": kwargs.get('currency'),
+            "country": kwargs.get('country'),
+            "amount": kwargs.get('amount'),
+            "email": kwargs.get('email'),
+            "phonenumber": kwargs.get('phonenumber'),
+            "firstname": kwargs.get('firstname'),
+            "lastname": kwargs.get('lastname'),
+            "IP": kwargs.get('IP'),
+            "txRef": kwargs.get('txRef'),
+            "device_fingerprint": kwargs.get('device_fingerprint', False)
         }
         card_params = {
-            "form.cardno": kwargs.get('cardno'),
-            "form.ccv": kwargs.get('ccv', True),
-            "form.expirymonth": kwargs.get('expirymonth', True),
-            "form.expiryyear": kwargs.get('expiryyear', True),
-            "form.charge_type": kwargs.get('charge_type') if preauthorised else preauthorised
+            "cardno": kwargs.get('cardno'),
+            "cvv": kwargs.get('cvv'),
+            "expirymonth": kwargs.get('expirymonth', True),
+            "expiryyear": kwargs.get('expiryyear', True),
+        }
+        if preauthorised:
+            card_params["charge_type"] = preauthorised
 
-        }
         account_params = {
-            "form.accountnumber": kwargs.get("accountnumber"),
-            "form.accountbank": kwargs.get("accountbank"),
-            "form.payment_type": kwargs.get("payment_type", "account")
+            "accountnumber": kwargs.get("accountnumber"),
+            "accountbank": kwargs.get("accountbank"),
+            "payment_type": kwargs.get("payment_type", "account")
         }
-        url = self.rave_url_map.get("test_encryption_url") if self.implementation == "test" else self.rave_url_map.get("live_encryption_url")
+        if self.implementation == "live":
+            if using == "acount":
+                account_params.update(common_params)
+                client = self.pyrave_encrypt(**account_params)
+                return {
+                    'PBFPubKey': self.public_key,
+                    'client': client,
+                    'alg': '3DES-24'
+                }
+            card_params.update(common_params)
+            import json
+            ca = json.dumps(card_params)
+            client = self.pyrave_encrypt(ca)
+            print(client)
+            return {
+                'PBFPubKey': self.public_key,
+                'client': client,
+                'alg': '3DES-24'
+            }
+        url = self.rave_url_map.get("test_encryption_url")
         if using == "account":
             account_params.update(common_params)
-            return self._exec_request("POST", url, data=account_params)
+            return self._exec_request("POST", url, data=account_params, log_url=log_url)
         card_params.update(common_params)
-        if self.implementation == "test":
-            return self._exec_request("POST", url, data=card_params, log_url=log_url)
-        client = self.integrity_checksum(**card_params)
-        return {
-            'PBFPubKey': self.public_key,
-            'client': client,
-            'alg': '3DES-24'
-        }
+        return self._exec_request("POST", url, data=card_params, log_url=log_url)
+
 
 
