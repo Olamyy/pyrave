@@ -1,6 +1,5 @@
 import base64
 from Crypto.Cipher import DES3
-import hashlib
 from pyrave.base import BaseRaveAPI
 
 
@@ -11,6 +10,18 @@ class RaveEncryption(BaseRaveAPI):
     """
     def __init__(self):
         super(RaveEncryption, self).__init__()
+
+    def pyrave_encrypt(self, plain_text):
+        blockSize = 8
+        padDiff = blockSize - (len(plain_text) % blockSize)
+        cipher = DES3.new(self.encryption_key, DES3.MODE_ECB)
+        plain_text = "{}{}".format(plain_text, "".join(chr(padDiff) * padDiff))
+        return base64.b64encode(cipher.encrypt(plain_text)).decode('utf-8')
+
+    def integrity_checksum(self, **kwargs):
+        plain_text = self.secret_key + ''.join(
+                kwargs)
+        return self.pyrave_encrypt(plain_text)
 
     def encrypt(self, using='card', preauthorised=False, log_url=False, **kwargs):
         """
@@ -54,19 +65,13 @@ class RaveEncryption(BaseRaveAPI):
             account_params.update(common_params)
             return self._exec_request("POST", url, data=account_params)
         card_params.update(common_params)
+        if self.implementation == "test":
+            return self._exec_request("POST", url, data=card_params, log_url=log_url)
+        client = self.integrity_checksum(**card_params)
+        return {
+            'PBFPubKey': self.public_key,
+            'client': client,
+            'alg': '3DES-24'
+        }
 
-        return self._exec_request("POST", url, data=card_params, log_url=log_url)
-
-    def pyrave_encrypt(self,  plain_text):
-        blockSize = 8
-        padDiff = blockSize - (len(plain_text) % blockSize)
-        cipher = DES3.new(self.encryption_key, DES3.MODE_ECB)
-
-        plain_text = "{}{}".format(plain_text, "".join(chr(padDiff) * padDiff))
-        return base64.b64encode(cipher.encrypt(plain_text)).decode('utf-8')
-
-    def integrity_checksum(self, **kwargs):
-        plain_text = self.secret_key + ''.join(
-            **kwargs)
-        return self.pyrave_encrypt(plain_text)
 
