@@ -12,4 +12,4 @@ venv/
 venv-2/
 pyrave.egg-info
 dist
-
+./pytest_cache
