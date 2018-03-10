@@ -46,6 +46,7 @@ rave_url_map = {
 
 os.environ["RAVE_SECRET_KEY"] = "FLWSECK-cb26302f4cedae0fdbed8eff3f8279ec-X"
 os.environ["RAVE_PUBLIC_KEY"] = "FLWPUBK-7d2b1d0a7b3f48e30299dfa251448491-X"
+os.environ["RAVE_DEBUG"] = "1"
 
 
 class TestBaseAPI(TestCase):
@@ -459,16 +460,27 @@ class TestPayment(TestCase):
         self.assertEqual(payment[0], 200)
         self.assertEqual(payment[1].json(), data)
 
-    def test_capture_preauthorised_transaction(self):
-        payment = self.base.verify_transaction(reference="flw_ref")
-        self.assertEqual(payment[0], 200)
-
     def test_refund_or_void_transaction(self):
-        payment = self.base.verify_transaction(reference="flw_ref")
+        payment = self.base.refund("flw_ref")
         self.assertEqual(payment[0], 200)
 
     def test_tokenize_charge(self):
-        payment = self.base.verify_transaction(reference="flw_ref")
+        request_data = {
+            "currency": "NGN",
+            "country": "Nigeria",
+            "amount": 5000,
+            "email": "olamyy53@gmail.com",
+            "phonenumber": "09036671876",
+            "firstname": "Lekan",
+            "lastname": "Wahab",
+            "IP": "127.0.0.1",
+            "txRef": "123r34",
+            "cardno": "5438898014560229",
+            "cvv": "789",
+            "expiryyear": "19",
+            "expirymonth": "09",
+        }
+        payment = self.base.tokenize_charge(token="flw_ref", **request_data)
         self.assertEqual(payment[0], 200)
 
     def test_refund(self):
