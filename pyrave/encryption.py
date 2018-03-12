@@ -36,6 +36,8 @@ class RaveEncryption(BaseRaveAPI):
         :return:
         """
         common_params = {
+            "seckey": self.secret_key,
+            "pubkey": self.public_key,
             "PBFPubKey": self.public_key,
             "currency": kwargs.get('currency'),
             "country": kwargs.get('country'),
