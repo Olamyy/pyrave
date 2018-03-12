@@ -27,8 +27,8 @@ class Payment(BaseRaveAPI):
             kwargs["txRef"] = generate_id("txRef")
         if not kwargs.get("device_fingerprint"):
             kwargs["device_fingerprint"] = generate_id("device_fingerprint")
-
         encrypted_data = self.rave_enc.encrypt(using, preauthorised, **kwargs)
+        print(encrypted_data)
         if return_encrypted:
             return encrypted_data
         url = self.rave_url_map.get("payment_endpoint") + "charge"
