@@ -1,22 +1,20 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=787a2f89b15c637323c7340d65ec17e898ac44480706b4b4122ea040c2a88f1d
 language: python
-global:
-    - CC_TEST_REPORTER_ID=c094704dcba3116412e99b7c1568cbb6dd1b82acef2e725a7803498c2baea60d
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter
-  - chmod +x cc-test-reporter
-  - ./cc-test-reporter before-build
-after_script:
-  - ./cc-test-reporter after-build --coverage-input-type --exit-code $TRAVIS_TEST_RESULT
 python:
   - "2.7"
   - "3.5"
   - "3.5-dev"  # 3.5 development branch
   - "3.6"
-# command to install dependencies
 install:
   - pip install -r requirements.txt
-# command to run tests
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 script:
-  - pytest tests.py # or py.test for Python versions 3.5 and below
-after_success:
-  - coveralls
+  - pytest tests.py
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
