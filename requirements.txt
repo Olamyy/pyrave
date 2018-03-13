@@ -4,4 +4,3 @@ future
 six
 mock
 coverage
-python-coveralls
