@@ -5,3 +5,4 @@ six
 mock
 coverage
 python-coveralls
+codeclimate-test-reporter

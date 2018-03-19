@@ -5,7 +5,6 @@ from unittest import TestCase
 from pyrave import RaveEncryption
 from pyrave.base import BaseRaveAPI
 from pyrave.errors import AuthKeyError
-from pyrave.payment import Payment
 
 from mock import patch, Mock
 
@@ -97,6 +96,14 @@ class TestEncrypt(TestCase):
         result = m.encrypt(**self.data)
         self.assertEqual(reply, result)
 
+
+class TestPayment(TestCase):
+    @patch('requests.post')
+    def test_pay(self):
+        pass
+
+    def test_verify_payment(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
