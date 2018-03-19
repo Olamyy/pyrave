@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/pyrave.svg)](https://pypi.python.org/pypi/pyrave/1.0.3a0)
 [![Build Status](https://travis-ci.org/Olamyy/pyrave.svg?branch=master)](https://travis-ci.org/Olamyy/pyrave)
 [![Maintainability](https://api.codeclimate.com/v1/badges/9fb01e83e7168dece8e3/maintainability)](https://codeclimate.com/github/Olamyy/pyrave/maintainability)
-[![Coverage Status](https://raw.githubusercontent.com/olamyy/pyrave/dev/cv.png)](https://codeclimate.com/github/Olamyy/pyrave/code)
+[![Coverage Status](https://raw.githubusercontent.com/olamyy/pyrave/dev/cv.png)](https://coveralls.io/github/Olamyy/pyrave?branch=master)
 
 
 Pyrave is a python wrapper for the flutterwave's [rave](http://rave.frontendpwc.com/) payment platform 
