@@ -28,10 +28,10 @@ class Payment(BaseRaveAPI):
         if not kwargs.get("device_fingerprint"):
             kwargs["device_fingerprint"] = generate_id("device_fingerprint")
         encrypted_data = self.rave_enc.encrypt(using, preauthorised, **kwargs)
+        print(encrypted_data)
         if return_encrypted:
             return encrypted_data
         url = self.rave_url_map.get("payment_endpoint") + "charge"
-        print(encrypted_data)
         suggested_auth_request = self._exec_request("POST", url, encrypted_data)
         if suggested_auth_request[0] in [400, 401]:
             return suggested_auth_request
@@ -121,11 +121,10 @@ class Payment(BaseRaveAPI):
         url = self.rave_url_map.get("payment_endpoint") + "tokenized/charge"
         return self._exec_request("POST", url, kwargs, log_url=log_url)
 
-    def refund(self, reference_id, log_url=False, ):
+    def refund(self, reference_id, log_url=False):
         request_data = {
             "ref": reference_id,
             "seckey": self.secret_key,
         }
         url = self.rave_url_map.get("merchant_refund_endpoint")
         return self._exec_request("POST", url, request_data, log_url=log_url)
-

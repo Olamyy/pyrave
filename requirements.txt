@@ -1,5 +1,6 @@
-Crypto
+pycrypto
 requests
 future 
 six
 mock
+coverage
